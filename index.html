@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Count my words!</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                height: 100vh;
+                padding: 24px;
+            }
+
+            #app {
+                width: 500px;
+                margin: 0 auto;
+            }
+
+            h1 {
+                margin-bottom: 15px;
+            }
+
+            textarea {
+                width: 100%;
+                height: 150px;
+                padding: 12px 20px;
+                box-sizing: border-box;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                background-color: #f8f8f8;
+                font-size: 16px;
+                resize: none;
+            }
+
+            button {
+                display: inline-block;
+                outline: 0;
+                cursor: pointer;
+                padding: 5px 16px;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 20px;
+                vertical-align: middle;
+                border: 1px solid;
+                border-radius: 6px;
+                color: #0366d6;
+                background-color: #fafbfc;
+                border-color: #1b1f2326;
+                box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset;
+                transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+                transition-property: color, background-color, border-color;
+            }
+
+            button:hover {
+                color: #ffffff;
+                background-color: #0366d6;
+                border-color: #1b1f2326;
+                box-shadow: rgba(27, 31, 35, 0.1) 0px 1px 0px 0px, rgba(255, 255, 255, 0.03) 0px 1px 0px 0px inset;
+                transition-duration: 0.1s;
+            }
+
+            pre {
+                margin-top: 15px;
+                padding: 15px;
+                border: 1px solid;
+                border-radius: 6px;
+                border-color: #1b1f2326;
+            }
+
+            #responseTime {
+                color: gray;
+                font-style: italic;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <h1>Word Counter</h1>
+            <form method="post" onsubmit="return countText()">
+                <label for="text">Enter some text below to count</label>
+                <textarea id="textToCountInput"></textarea>
+                <button type="submit">Count</button>
+            </form>
+            <br />
+            <p id="responseTime"></p>
+            <pre id="result"></pre>
+        </div>
+
+        <script>
+            // don't look at this code! It's scrappy
+            const textInput = document.getElementById('textToCountInput');
+            const resultElement = document.getElementById('result');
+            const responseTimeElement = document.getElementById('responseTime');
+
+            const REQUEST_ITERATIONS = 20;
+
+            const countText = () => {
+                responseTimeElement.innerText = '';
+                const text = textInput.value;
+                if (text === undefined || text.trim() === '') {
+                    return false;
+                }
+
+                let totalMs = 0;
+                let res;
+                for (let i = 0; i < REQUEST_ITERATIONS; i++) {
+                    const startTime = Date.now();
+                    fetch('http://localhost:8000/count', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text }),
+                    })
+                        .then(async (res) => {
+                            const duration = Date.now() - startTime;
+                            totalMs += duration;
+
+                            responseTimeElement.innerText = `Average response time (per ${REQUEST_ITERATIONS} req): ${
+                                totalMs / REQUEST_ITERATIONS
+                            }ms`;
+
+                            if (!res.ok) {
+                                resultElement.style = 'color: red';
+                                resultElement.textContent = JSON.stringify(
+                                    {
+                                        status: res.status,
+                                        message: res.statusText,
+                                    },
+                                    undefined,
+                                    2
+                                );
+                                return;
+                            }
+
+                            resultElement.style = 'color: black';
+                            resultElement.textContent = JSON.stringify(await res.json(), undefined, 2);
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            resultElement.style = 'color: red';
+                            resultElement.textContent = JSON.stringify(
+                                {
+                                    error: error.message,
+                                },
+                                undefined,
+                                2
+                            );
+                        });
+                }
+
+                return false;
+            };
+        </script>
+    </body>
+</html>

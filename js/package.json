@@ -1,0 +1,13 @@
+{
+    "name": "spell-checker",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "main": "./src/main.js",
+    "scripts": {
+        "start": "node ./src/main.js"
+    },
+    "dependencies": {
+        "express": "^4.18.1"
+    }
+}
