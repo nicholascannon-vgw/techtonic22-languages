@@ -32,4 +32,5 @@ app.post('/check', (req, res) => {
     return res.json({ mistakes });
 });
 
-app.listen(8000, () => console.log('Service started on port 8000...'));
+const server = app.listen(8000, () => console.log('Service started on port 8000...'));
+process.on('SIGINT', () => server.close(() => console.log('Server closed')));
