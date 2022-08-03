@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-lang=$1
+lang=$1     # js | py | java | go | rust | c
 
 { # try
     cd $lang && \
