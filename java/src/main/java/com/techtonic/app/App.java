@@ -8,21 +8,20 @@ public class App {
     private static final Gson GSON = new GsonBuilder().create();
 
     public static void main( String[] args ) {
-        port(8000);
-
         get("/healthcheck", (req, res) -> {
             res.type("application/json");
-            return GSON.toJson(new MyMessage("healthy"));
+            return GSON.toJson(new MessageResponse("healthy"));
         });
 
         System.out.println("Server running on port 8000...");
+        port(8000);
     }
 }
 
-class MyMessage {
+class MessageResponse {
     String message;
 
-    public MyMessage(String message) {
+    public MessageResponse(String message) {
         this.message = message;
     }
 }
