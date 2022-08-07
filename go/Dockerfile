@@ -16,4 +16,4 @@ FROM scratch
 
 COPY --from=build /usr/src/app/main .
 
-CMD [ "./main" ]
+CMD [ "/main" ]
