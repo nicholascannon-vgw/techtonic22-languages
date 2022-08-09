@@ -4,6 +4,14 @@ import static spark.Spark.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+class MessageResponse {
+    String message;
+
+    public MessageResponse(String message) {
+        this.message = message;
+    }
+}
+
 public class App {
     private static final Gson GSON = new GsonBuilder().create();
 
@@ -15,13 +23,5 @@ public class App {
 
         System.out.println("Server running on port 8000...");
         port(8000);
-    }
-}
-
-class MessageResponse {
-    String message;
-
-    public MessageResponse(String message) {
-        this.message = message;
     }
 }
