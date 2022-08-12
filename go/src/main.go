@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"techtonic/src/middleware"
+	"techtonic/src/res"
 
 	"github.com/gorilla/mux"
 )
@@ -16,20 +16,17 @@ type MessageResponse struct {
 
 type WordCount map[string]int
 
-func jsonResponse(w http.ResponseWriter, body interface{}) {
-	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(body)
-}
-
 func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
-		jsonResponse(w, MessageResponse{Message: "healthy"})
+		res.JSON(w, MessageResponse{Message: "healthy"})
+		res.Status(w, 200)
 	})
 
 	router.HandleFunc("/count", func(w http.ResponseWriter, r *http.Request) {
-		jsonResponse(w, WordCount{"Hello": 1, "world": 1})
+		res.JSON(w, WordCount{"Hello": 1, "world": 1})
+		res.Status(w, 200)
 	})
 
 	// Allow the frontend to call this service
