@@ -1,15 +1,9 @@
-const express = require('express');
-const { isEmptyString, notString } = require('./validation');
+import express from 'express';
+import { corsMiddleware } from './middleware.js';
 
 const app = express();
 app.use(express.json());
-
-app.use((_req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
-    next();
-});
+app.use(corsMiddleware);
 
 app.get('/healthcheck', (_req, res) => {
     return res.json({ message: 'healthy' });
@@ -17,9 +11,6 @@ app.get('/healthcheck', (_req, res) => {
 
 app.post('/count', (req, res) => {
     const { text } = req.body;
-    if (notString(text) || isEmptyString(text)) {
-        return res.sendStatus(400);
-    }
 
     const wordCount = new Map();
 
@@ -27,7 +18,7 @@ app.post('/count', (req, res) => {
     for (const word of words) {
         // replace all punctuation
         const sanitizedWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
-        if (isEmptyString(word)) {
+        if (word.trim() === '') {
             continue;
         }
 
