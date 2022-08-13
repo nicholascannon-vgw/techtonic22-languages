@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 	"techtonic/src/middleware"
 	"techtonic/src/req"
@@ -20,8 +19,6 @@ type MessageResponse struct {
 type WordCountBody struct {
 	Text string `json:"text"`
 }
-
-var punctuationRegex = regexp.MustCompile(regexp.QuoteMeta("[.,/#!$%^&*;:{}=-_`~()]"))
 
 func main() {
 	router := mux.NewRouter()
@@ -39,9 +36,18 @@ func main() {
 
 		words := strings.Split(payload.Text, " ")
 		for _, word := range words {
-			cleansedWord := punctuationRegex.ReplaceAllString(word, "")
-			count := wordCount[cleansedWord]
-			wordCount[cleansedWord] = count + 1
+			if strings.TrimSpace(word) == "" {
+				continue
+			}
+			if strings.Contains(word, ",") {
+				word = strings.ReplaceAll(word, ",", "")
+			}
+			if strings.Contains(word, "!") {
+				word = strings.ReplaceAll(word, "!", "")
+			}
+
+			count := wordCount[word]
+			wordCount[word] = count + 1
 		}
 
 		res.Status(w, 200)

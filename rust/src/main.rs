@@ -31,6 +31,9 @@ async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
         // Copy word out of words
         let mut cleansed_word = word.clone().to_string();
 
+        if word.trim() == "" {
+            continue;
+        }
         if word.contains(",") {
             cleansed_word = cleansed_word.replace(",", "");
         }

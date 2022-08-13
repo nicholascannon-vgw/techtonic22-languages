@@ -15,15 +15,19 @@ app.post('/count', (req, res) => {
     const wordCount = new Map();
 
     const words = text.split(' ');
-    for (const word of words) {
-        // replace all punctuation
-        const sanitizedWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
+    for (let word of words) {
         if (word.trim() === '') {
             continue;
         }
+        if (word.includes(',')) {
+            word = word.replace(',', '');
+        }
+        if (word.includes('!')) {
+            word = word.replace('!', '');
+        }
 
-        const count = wordCount.get(sanitizedWord) || 0;
-        wordCount.set(sanitizedWord, count + 1);
+        const count = wordCount.get(word) || 0;
+        wordCount.set(word, count + 1);
     }
 
     return res.json({ ...Object.fromEntries(wordCount) });
