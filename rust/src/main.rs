@@ -60,7 +60,8 @@ async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
 async fn main() -> Result<()> {
     HttpServer::new(|| {
         App::new()
-            .wrap(Cors::permissive())
+            .wrap(Cors::permissive()) // allow the frontend to call this
+            // Add our endpoints
             .service(healthcheck)
             .service(count_words)
     })
