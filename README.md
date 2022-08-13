@@ -13,7 +13,7 @@ Learn what makes programming languages unique and how to select the one that’s
 
 -   **JavaScript**: high level, dynamically typed, interpreted, garbage collected scripting languages
 -   **Go**: Natively compiled, statically typed, garbage collected programming language
--   **C**: Natively compiled, statically typed, low level, non garbage collected programming language
+-   **Rust**: Natively compiled, statically typed, low level, non garbage collected programming language
 
 ## How do I run my code?
 
