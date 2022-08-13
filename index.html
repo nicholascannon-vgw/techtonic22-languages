@@ -101,17 +101,35 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text }),
-                }).then(async (res) => {
-                    if (!res.ok) {
-                        console.error({
-                            status: res.status,
-                            body: await res.json(),
-                        });
-                        return;
-                    }
+                })
+                    .then(async (res) => {
+                        if (!res.ok) {
+                            resultElement.style = 'color: red';
+                            resultElement.textContent = JSON.stringify(
+                                {
+                                    status: res.status,
+                                    message: res.statusText,
+                                },
+                                undefined,
+                                2
+                            );
+                            return;
+                        }
 
-                    resultElement.textContent = JSON.stringify(await res.json(), undefined, 2);
-                });
+                        resultElement.style = 'color: black';
+                        resultElement.textContent = JSON.stringify(await res.json(), undefined, 2);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        resultElement.style = 'color: red';
+                        resultElement.textContent = JSON.stringify(
+                            {
+                                error: error.message,
+                            },
+                            undefined,
+                            2
+                        );
+                    });
 
                 return false;
             };
