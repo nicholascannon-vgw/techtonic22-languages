@@ -25,28 +25,29 @@ async fn healthcheck() -> Result<impl Responder> {
 async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
     let mut word_counts: HashMap<String, i64> = HashMap::new();
 
-    let words = body.text.split_ascii_whitespace();
+    let words = body.text.split_whitespace();
+    // word here references memory inside words
     for word in words {
-        // let mut cleansedWord = word;
+        // Copy word out of words
+        let mut cleansed_word = word.clone().to_string();
 
-        // if word.contains(",") {
-        //     let new_s = cleansedWord.replace(",", "").to_string();
-        //     cleansedWord = &new_s;
-        // }
-        // if word.contains("!") {
-        //     cleansedWord = &cleansedWord.replace("!", "")
-        // }
-        // println!("{}", cleansedWord)
+        if word.contains(",") {
+            cleansed_word = cleansed_word.replace(",", "");
+        }
+        if word.contains("!") {
+            cleansed_word = cleansed_word.replace("!", "")
+        }
 
         let mut count = 0;
 
-        let existing_count = word_counts.get(word);
+        let existing_count = word_counts.get(&cleansed_word);
         match existing_count {
             None => { /* Do nothing */ }
-            Some(old_count) => count += old_count,
+            Some(old_count) => count = *old_count,
         }
 
-        word_counts.insert(word.to_string(), count + 1);
+        count += 1;
+        word_counts.insert(cleansed_word, count);
     }
 
     Ok(web::Json(word_counts))
