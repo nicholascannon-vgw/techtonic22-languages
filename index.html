@@ -73,6 +73,12 @@
                 border-radius: 6px;
                 border-color: #1b1f2326;
             }
+
+            #responseTime {
+                color: gray;
+                font-style: italic;
+                font-size: 14px;
+            }
         </style>
     </head>
     <body>
@@ -83,15 +89,19 @@
                 <textarea id="textToCountInput"></textarea>
                 <button type="submit">Count</button>
             </form>
-            <pre id="result" />
+            <pre id="result"></pre>
+            <br />
+            <p id="responseTime"></p>
         </div>
 
         <script>
             // don't look at this code! It's scrappy
             const textInput = document.getElementById('textToCountInput');
             const resultElement = document.getElementById('result');
+            const responseTimeElement = document.getElementById('responseTime');
 
             const countText = () => {
+                responseTimeElement.innerText = '';
                 const text = textInput.value;
                 if (text === undefined || text.trim() === '') {
                     return false;
@@ -105,12 +115,12 @@
                 })
                     .then(async (res) => {
                         const duration = Date.now() - startTime;
+                        responseTimeElement.innerText = `Response took ${duration}ms`;
 
                         if (!res.ok) {
                             resultElement.style = 'color: red';
                             resultElement.textContent = JSON.stringify(
                                 {
-                                    requestDuration: `${duration}ms`,
                                     status: res.status,
                                     message: res.statusText,
                                 },
@@ -121,14 +131,7 @@
                         }
 
                         resultElement.style = 'color: black';
-                        resultElement.textContent = JSON.stringify(
-                            {
-                                requestDuration: `${duration}ms`,
-                                responseBody: await res.json(),
-                            },
-                            undefined,
-                            2
-                        );
+                        resultElement.textContent = JSON.stringify(await res.json(), undefined, 2);
                     })
                     .catch((error) => {
                         console.error(error);
