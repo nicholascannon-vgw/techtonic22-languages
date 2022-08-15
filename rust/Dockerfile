@@ -5,12 +5,11 @@ RUN apk add --no-cache musl-dev
 
 WORKDIR /usr/src
 
-# Create blank project to cache project deps into
+# Create blank project to cache dependencies
 RUN USER=root cargo new techtonic
-
 WORKDIR /usr/src/techtonic
 
-# Install deps only
+# Install dependencies
 COPY Cargo.toml .
 COPY Cargo.lock .
 RUN cargo build --release
@@ -19,12 +18,11 @@ RUN cargo build --release
 RUN rm ./src/*.rs
 RUN rm ./target/release/deps/techtonic*
 
-# Compile our application
+# Compile app to binary
 COPY src/ src/
 RUN cargo build --release
 
-FROM scratch
+FROM scratch AS runtime
 
 COPY --from=build /usr/src/techtonic/target/release/techtonic .
-
 CMD [ "/techtonic" ]
