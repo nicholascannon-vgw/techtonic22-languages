@@ -8,7 +8,8 @@ Learn what makes programming languages unique and how to select the one that’s
 -   **Go**: Natively compiled, statically typed, garbage collected programming language
 -   **Rust**: Natively compiled, statically typed, low level, non garbage collected programming language
 
-## How do I run my code?
+## Standard library docs
 
-All software in this workshop runs inside Docker!
-No need to install compilers or interpreters.
+-   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
+-   https://pkg.go.dev/std
+-   https://doc.rust-lang.org/std/
