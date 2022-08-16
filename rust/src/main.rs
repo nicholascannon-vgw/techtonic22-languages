@@ -28,8 +28,8 @@ async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
     let words = body.text.split_whitespace();
     // word here references memory inside words
     for word in words {
-        // Copy word out of words
-        let mut cleansed_word = word.clone().to_string();
+        // Copies string memory
+        let mut cleansed_word = word.to_string();
 
         if word.trim() == "" {
             continue;
@@ -61,7 +61,6 @@ async fn main() -> Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(Cors::permissive()) // allow the frontend to call this
-            // Add our endpoints
             .service(healthcheck)
             .service(count_words)
     })
