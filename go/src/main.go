@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"techtonic/src/middleware"
 	"techtonic/src/req"
 	"techtonic/src/res"
@@ -24,7 +23,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
-		res.Status(w, 200)
+		res.Status(w, 200) // Note: status must come before JSON
 		res.JSON(w, MessageResponse{Message: "healthy"})
 	})
 
@@ -32,30 +31,10 @@ func main() {
 		payload := WordCountBody{}
 		req.ParseJSON(r, &payload)
 
-		wordCount := map[string]int{}
-
-		words := strings.Split(payload.Text, " ")
-		for _, word := range words {
-			if strings.TrimSpace(word) == "" {
-				continue
-			}
-			if strings.Contains(word, ",") {
-				word = strings.ReplaceAll(word, ",", "")
-			}
-			if strings.Contains(word, "!") {
-				word = strings.ReplaceAll(word, "!", "")
-			}
-
-			count := wordCount[word]
-			wordCount[word] = count + 1
-		}
-
-		res.Status(w, 200)
-		res.JSON(w, wordCount)
+		// TODO: count words here...
 	})
 
-	// Allow the frontend to call this service
-	router.Use(middleware.Cors)
+	router.Use(middleware.Cors) // Allow the frontend to call this service
 
 	fmt.Println("Listening on port 8000...")
 	err := http.ListenAndServe(":8000", router)
