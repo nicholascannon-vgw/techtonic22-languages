@@ -12,7 +12,7 @@ app.get('/healthcheck', (_req, res) => {
 app.post('/count', (req, res) => {
     const { text } = req.body;
 
-    // TODO: count words here...
+    // TODO: implementation
 });
 
 const server = app.listen(8000, () => console.log('Service started on port 8000...'));

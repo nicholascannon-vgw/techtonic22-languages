@@ -31,7 +31,7 @@ func main() {
 		payload := WordCountBody{}
 		req.ParseJSON(r, &payload)
 
-		// TODO: count words here...
+		// TODO: implementation
 	})
 
 	router.Use(middleware.Cors) // Allow the frontend to call this service

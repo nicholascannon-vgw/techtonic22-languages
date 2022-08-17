@@ -25,7 +25,7 @@ async fn healthcheck() -> Result<impl Responder> {
 async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
     let mut word_counts: HashMap<String, i64> = HashMap::new();
 
-    // TODO: count words here...
+    // TODO: implementation
 
     Ok(web::Json(word_counts))
 }
