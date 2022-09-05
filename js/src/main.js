@@ -14,7 +14,24 @@ app.post('/count', (req, res) => {
     const { text } = req.body;
     const wordCounts = new Map();
 
-    // TODO: Count words here...
+    const words = text.split(' ');
+    for (let word of words) {
+        word = word.replaceAll('!', '');
+        word = word.replaceAll(',', '');
+        word = word.replaceAll('?', '');
+        word = word.replaceAll('\n', '');
+        word = word.replaceAll('\t', '');
+        word = word.replaceAll('"', '');
+        word = word.replaceAll('\\', '');
+        word = word.replaceAll('#', '');
+
+        if (word.trim() === '') {
+            continue;
+        }
+
+        const count = wordCounts.get(word) || 0;
+        wordCounts.set(word, count + 1);
+    }
 
     return res.json(Object.fromEntries(wordCounts.entries()));
 });
