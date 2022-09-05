@@ -38,9 +38,19 @@ async fn count_words(body: web::Json<WordCountBody>) -> Result<impl Responder> {
     let words = body.text.split_whitespace();
 
     let word_counts = words.fold(HashMap::new(), |mut acc, curr| {
-        let cleansed_word = curr.to_string();
+        let mut cleansed_word = curr.to_string();
 
-        // TODO: Clean word and skip empty strings...
+        cleansed_word = remove_from_string(cleansed_word, "!");
+        cleansed_word = remove_from_string(cleansed_word, ",");
+        cleansed_word = remove_from_string(cleansed_word, "?");
+        cleansed_word = remove_from_string(cleansed_word, "\n");
+        cleansed_word = remove_from_string(cleansed_word, "\t");
+        cleansed_word = remove_from_string(cleansed_word, "\\");
+        cleansed_word = remove_from_string(cleansed_word, "#");
+
+        if cleansed_word.trim() == "" {
+            return acc;
+        }
 
         // in-place manipulation
         *acc.entry(cleansed_word).or_insert(0) += 1;

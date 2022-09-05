@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"techtonic/src/middleware"
 	"techtonic/src/req"
 	"techtonic/src/res"
@@ -33,7 +34,23 @@ func main() {
 
 		wordCounts := map[string]uint{}
 
-		// TODO: Count words here...
+		words := strings.Split(payload.Text, " ")
+		for _, word := range words {
+			word = strings.ReplaceAll(word, "!", "")
+			word = strings.ReplaceAll(word, ",", "")
+			word = strings.ReplaceAll(word, "?", "")
+			word = strings.ReplaceAll(word, "\n", "")
+			word = strings.ReplaceAll(word, "\t", "")
+			word = strings.ReplaceAll(word, "\"", "")
+			word = strings.ReplaceAll(word, "\\", "")
+			word = strings.ReplaceAll(word, "#", "")
+
+			if strings.TrimSpace(word) == "" {
+				continue
+			}
+
+			wordCounts[word] += 1
+		}
 
 		res.Status(w, 200)
 		res.JSON(w, wordCounts)
